@@ -1,0 +1,18 @@
+canvas {
+	display: block;
+	position: absolute;
+	margin: auto;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+p {
+	display: none;
+	position: relative;
+	margin-top: 430px;
+	text-align: center;
+	font-size: 40px;
+	color: white;
+}
