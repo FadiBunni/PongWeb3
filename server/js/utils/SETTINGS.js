@@ -1,4 +1,4 @@
-var SETTINGS = {
+const SETTINGS = {
   VER : "1.0",
   WIDTH : 600,
   HEIGHT : 400,
