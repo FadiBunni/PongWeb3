@@ -1,7 +1,7 @@
 const INTERVAL = 10;
 
 function GameManager(io, roomManager){
-	let GmMg = this;
+	var GmMg = this;
 	GmMg.RmMg = roomManager;
 
 	GmMg.update = setInterval(function(){

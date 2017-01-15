@@ -1,3 +1,4 @@
+'use strict';
 const express = require('express');
 const app     = express();
 const http    = require('http').Server(app);
@@ -16,17 +17,18 @@ http.listen(port, function(){
 });
 
 const SETTINGS = require('./server/js/utils/SETTINGS.js');
-const lobbyManager = require('./server/js/gamestate/lobbymanager.js')(io);
-const roomManager = require('./server/js/gamestate/roommanager.js')(io);
-const gameManager = require('./server/js/gamestate/gamemanager.js')(io, roomManager);
+const lobbyManager = new (require('./server/js/gamestate/lobbymanager.js'))(io);
+const roomManager  = new (require('./server/js/gamestate/roommanager.js'))(io);
+const gameManager  = new (require('./server/js/gamestate/gamemanager.js'))(io, roomManager);
 
 io.on('connection', function(socket){
     console.log('user connected: ', socket.id);
     io.to(socket.id).emit('connected', SETTINGS.CLIENT_SETTINGS);
-    socket.broadcast.emit('new user entered', socket.server.eio.clientsCount);
+    socket.broadcast.emit('new user entered');
+    io.emit('total user count updated', socket.server.eio.clientsCount);
 
     socket.on('waiting', function(){
-        console.log('waiting from ' + socekt.id);
+        console.log('waiting from ' + socket.id);
         lobbyManager.push(socket);
         lobbyManager.dispatch(roomManager);
     });

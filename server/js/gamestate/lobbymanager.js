@@ -1,5 +1,5 @@
 function LobbyManager(io){
-	let LbMg = thisM
+	var LbMg = this;
 	LbMg.lobby = [];
 	LbMg.updating = false;
 
@@ -11,7 +11,7 @@ function LobbyManager(io){
 	};
 
 	LbMg.kick = function(socket) {
-		let index = LbMg.lobby.indexOf(socket);
+		var index = LbMg.lobby.indexOf(socket);
 		if(index >= 0 ){
 			LbMg.lobby.splice(index, 1);
 		}
@@ -22,21 +22,14 @@ function LobbyManager(io){
 		LbMg.dispatching = true;
 
 		while(LbMg.lobby.length > 1) {
-			let player0 = LbMg.lobby.splice(0,1);
-			let player1 = LbMg.lobby.splice(0,1);
+			var player0 = LbMg.lobby.splice(0,1);
+			var player1 = LbMg.lobby.splice(0,1);
 			RmMg.create(player0[0],player1[0]);
 			//console.log("lobbyout: "+player0[0].id);
       		//console.log("lobbyout: "+player1[0].id);
      		//console.log("lobbyout.length: "+LbMg.lobby.length);
 		}
 		LbMg.dispatching = false;
-	};
-
-	LbMg.clean = function() {
-		let socket = LbMg.lobby;
-		LbMg.lobby = socket.filter(function(socket){
-			return socket !== null;
-		});
 	};
 }
 

@@ -1,16 +1,17 @@
 const Room = require('./room.js');
-const SETTINGS = require('./utils/SETTINGS.js');
+const SETTINGS = require('../utils/SETTINGS.js');
 
 function RoomManager(io){
-	let RmMg = this;
+	var RmMg = this;
 	RmMg.rooms = {};
 	RmMg.roomIndex = {};
 
 	RmMg.create = function(socket0, socket1){
-		let roomId = socket0.id+socket1.id;
-		let room = Room(RmMg, io, roomId, socket0, socket1);
+		var roomId = socket0.id+socket1.id;
+		console.log(roomId);
+		var room = Room(RmMg, io, roomId, socket0, socket1);
 		socket0.join(roomId);
-		socekt1.join(roomId);
+		socket1.join(roomId);
 		RmMg.rooms[roomId] = room;
 		RmMg.roomIndex[socket0.id] = roomId;
 		RmMg.roomIndex[socket1.id] = roomId;
@@ -22,9 +23,9 @@ function RoomManager(io){
 	};
 
 	RmMg.destroy = function(roomId){
-		let room = RmMg.rooms[roomId];
+		var room = RmMg.rooms[roomId];
 		room.players.forEach(function(socket){
-			let message = (!room.objects[socket.id].ready /*&& !room.objects.countdown*/) ? "You are not prepared": null;
+			var message = (!room.objects[socket.id].ready /*&& !room.objects.countdown*/) ? "You are not prepared": null;
 			delete RmMg.roomIndex[socket.id];
 			io.to(socket.id).emit('destroy', message);
 		});
@@ -32,9 +33,9 @@ function RoomManager(io){
 	};
 
 	RmMg.gameOver = function(roomId, winner){
-		let room = RmMg.rooms[roomId];
+		var room = RmMg.rooms[roomId];
 		room.players.forEach(function(socket){
-			let message = (socket.id == winner) ? "You win!" : "You lose!";
+			var message = (socket.id == winner) ? "You win!" : "You lose!";
 			delete RmMg.roomIndex[socket.id];
 			io.to(socket.id).emit('destroy', message);
 		});

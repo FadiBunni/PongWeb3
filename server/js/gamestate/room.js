@@ -1,6 +1,6 @@
-const SETTINGS = require('./utils/SETTINGS.js');
+const SETTINGS = require('../utils/SETTINGS.js');
 function Room (RmMg, io, id, socket0, socket1){
-	let room = this;
+	var room = this;
 	room.id = id;
 	room.RmMg = RmMg;
 	room.players = [socket0,socket1];
@@ -26,7 +26,7 @@ function Room (RmMg, io, id, socket0, socket1){
 
 module.exports = Room;
 
-let ready = {
+var ready = {
 	initialize: function(io,room){
 		this.io = io;
 		room.status = "ready";
@@ -40,13 +40,13 @@ let ready = {
 	},
 
 	loop: function(room){
-		let player0ready = room.objects[room.players[0].id].ready;
-		let player1ready = room.objects[room.players[1].id].ready;
+		var player0ready = room.objects[room.players[0].id].ready;
+		var player1ready = room.objects[room.players[1].id].ready;
 		if(player0ready && player1ready) {
 			ready.destroy(room);
 			playing.initialize(ready.io,room);
 		}
-		let statuses = getStatsFromObejcts(room);
+		var statuses = getStatsFromObejcts(room);
 		ready.io.to(room.id).emit('update', statuses);
 	},
 
@@ -56,7 +56,7 @@ let ready = {
 
 };
 
-let playing = {
+var playing = {
 	initialize: function(io,room){
 		this.io = io;
 		room.status = "countdown";
@@ -71,9 +71,9 @@ let playing = {
 	},
 
 	loop: function(room){
-		let statuses = getStatsFromObejcts(room);
+		var statuses = getStatsFromObejcts(room);
 		playing.io.to(room.id).emit('update', statuses);
-		if(room.status == "playing" && /*(room.objects[room.players[0].id].score>=SETTINGS.GOAL ||room.objects[room.players[1].id].score>=SETTINGS.GOAL)*/){
+		if(room.status == "playing" /*(room.objects[room.players[0].id].score>=SETTINGS.GOAL ||room.objects[room.players[1].id].score>=SETTINGS.GOAL)*/){
 			room.status = "gameOver";
 			room.gameOverDelay = 3;
 		}
@@ -88,7 +88,7 @@ let playing = {
 };
 
 function getStatsFromObejcts(room){
-	let statuses = [];
+	var statuses = [];
 	for(var object in room.objects){
 		var obj = room.objects[object];
 		obj.update(room);
