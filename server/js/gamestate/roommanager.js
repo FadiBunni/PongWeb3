@@ -1,5 +1,6 @@
-const Room = require('./room.js');
 const SETTINGS = require('../utils/SETTINGS.js');
+const STATES = require('../utils/STATES.js');
+const Room = require('./room.js');
 
 function RoomManager(io){
 	var RmMg = this;
@@ -9,13 +10,13 @@ function RoomManager(io){
 	RmMg.create = function(socket0, socket1){
 		var roomId = socket0.id+socket1.id;
 		console.log(roomId);
-		var room = Room(RmMg, io, roomId, socket0, socket1);
+		var room = new Room(RmMg, io, roomId, socket0, socket1);
 		socket0.join(roomId);
 		socket1.join(roomId);
 		RmMg.rooms[roomId] = room;
 		RmMg.roomIndex[socket0.id] = roomId;
 		RmMg.roomIndex[socket1.id] = roomId;
-		ready.initialize(io,room);
+		STATES.ready.initialize(io,room);
 		io.to(socket0.id).emit('ready', 'left');
 		io.to(socket1.id).emit('ready', 'right');
 		console.log('Room Created: ', roomId);
@@ -25,7 +26,7 @@ function RoomManager(io){
 	RmMg.destroy = function(roomId){
 		var room = RmMg.rooms[roomId];
 		room.players.forEach(function(socket){
-			var message = (!room.objects[socket.id].ready /*&& !room.objects.countdown*/) ? "You are not prepared": null;
+			var message = (!room.objects[socket.id].ready && !room.objects.countdown) ? "You are not prepared": null;
 			delete RmMg.roomIndex[socket.id];
 			io.to(socket.id).emit('destroy', message);
 		});

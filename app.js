@@ -1,4 +1,3 @@
-'use strict';
 const express = require('express');
 const app     = express();
 const http    = require('http').Server(app);
@@ -33,8 +32,15 @@ io.on('connection', function(socket){
         lobbyManager.dispatch(roomManager);
     });
 
+    socket.on('ready', function(){
+        var roomIndex = roomManager.roomIndex[socket.id];
+        if(roomIndex){
+            roomManager.rooms[roomIndex].objects[socket.id].ready = true;
+        }
+    });
+
     socket.on('disconnect', function(){
-        let roomIndex = roomManager.roomIndex[socket.id];
+        var roomIndex = roomManager.roomIndex[socket.id];
         if(roomIndex) {
             roomManager.destroy(roomIndex);
         }
@@ -43,38 +49,17 @@ io.on('connection', function(socket){
         //io.emit('total user count updated', socket.server.eio.clientCount);
     });
 
-    socket.on('ready', function(){
-        let roomIndex = roomManager.roomIndex[socket.id];
+    socket.on('keydown', function(keyCode){
+        var roomIndex = roomManager.roomIndex[socket.id];
         if(roomIndex){
-            roomManager.rooms[roomIndex].objects[socket.id].ready = true;
+            roomManager.rooms[roomIndex].objects[socket.id].keypress[keyCode] = true;
         }
     });
 
-    // socket.on('keydown', function(keyCode){
-    //     let roomIndex = roomManager.roomIndex[socket.id];
-    //     if(roomIndex){
-    //         roomManager.rooms[roomIndex].objects[socket.id].keypress[keyCode] = true;
-    //     }
-    // });
-
-    // socket.on('keyup', function(keyCode){
-    //     let roomIndex = roomManager.roomIndex[socket.id];
-    //     if(roomIndex) {
-    //         delete roomManager.rooms[roomIndex].objects[socket.id].keypress[keyCode];
-    //     }
-    // });
-
-    // socket.on('mousemove', function(x,y){
-    //     let roomIndex = roomManager.roomIndex[socket.id];
-    //     if(roomIndex) {
-    //         roomManager.rooms[roomIndex].objects[socket.id].mouse.move={x:x,y:y};
-    //     }
-    // });
-
-    // socket.on('click', function(x,y){
-    //     let roomIndex = roomManager.roomIndex[socket.id];
-    //     if(roomIndex) {
-    //         roomManager.rooms[roomIndex].objects[socket.id].mouse.click={x:x,y:y};
-    //     }
-    // });
+    socket.on('keyup', function(keyCode){
+        var roomIndex = roomManager.roomIndex[socket.id];
+        if(roomIndex) {
+            delete roomManager.rooms[roomIndex].objects[socket.id].keypress[keyCode];
+        }
+    });
 });
