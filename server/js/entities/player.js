@@ -26,7 +26,7 @@ function Player(id, position){
   this.ready = false;
   this.keypress = {};
 
-  this.status = {
+  this.status.rect = {
     height : SETTINGS.PLAYER.HEIGHT,
     width : SETTINGS.PLAYER.WIDTH,
     x : xPos,
@@ -37,7 +37,7 @@ function Player(id, position){
 Player.prototype = new Baseobject();
 Player.prototype.constructor = Player;
 Player.prototype.update = function(room){
-  var player = this.status;
+  var player = this.status.rect;
   if(room.status == "countdown" || room.status == "playing"){
     if(this.keypress[UP]){
       moveUp(player);

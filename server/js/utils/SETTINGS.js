@@ -1,7 +1,7 @@
-const SETTINGS = {
+var SETTINGS = {
   VER : "1.0",
-  WIDTH : 600,
-  HEIGHT : 400,
+  WIDTH : 1200,
+  HEIGHT : 800,
   BORDER_WIDTH : 10,
   BACKGROUND_COLOR : "#FFFFFF",
   PLAYER : {

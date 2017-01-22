@@ -1,6 +1,9 @@
-const SETTINGS = require('../utils/SETTINGS.js');
-const STATES = require('../utils/STATES.js');
+var STATES = require('../utils/STATES.js');
 const Room = require('./room.js');
+var Player = require('../entities/player.js');
+var Score = require('../utils/score.js');
+var Countdown = require("../utils/countdown.js");
+var SETTINGS = require('../utils/SETTINGS.js');
 
 function RoomManager(io){
 	var RmMg = this;
@@ -38,7 +41,6 @@ function RoomManager(io){
 		delete player by their socket.id in the roomIndex and and emit to socketid a message */
 		room.players.forEach(function(socket){
 			var message = (!room.objects[socket.id].ready && !room.objects.countdown) ? "You are not prepared": null;
-			console.log(socket.id);
 			delete RmMg.roomIndex[socket.id];
 			io.to(socket.id).emit('destroy', message);
 		});

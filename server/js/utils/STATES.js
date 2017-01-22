@@ -1,17 +1,17 @@
-const Countdown = require("./countdown.js");
-const SETTINGS = require('./SETTINGS.js');
+var Countdown = require("./countdown.js");
+var SETTINGS = require('./SETTINGS.js');
+
 var ready = {
 	initialize: function(io,room){
 		this.io = io;
 		room.status = "ready";
 		//Set the loop in the room equal to the loop in ready variable
 		room.loop = this.loop;
-		/*Destroy can be called because RmMg is inside the room contructor.
-		Calling the destroy function in RmMg not in this 'ready' variable*/
-		room.RmMg.destroy(room.id);
 		//Add countdown to the room.object array and instantiate a new one
 		room.objects.countdown = new Countdown(10,null,SETTINGS.HEIGHT-40);
     	room.objects.countdown.action = function(room){
+    		/*Destroy can be called because RmMg is inside the room contructor.
+			Calling the destroy function in RmMg not in this 'ready' variable*/
      		delete room.objects.countdown;
       		room.RmMg.destroy(room.id);
     	};
@@ -39,7 +39,6 @@ var playing = {
 		this.io = io;
 		room.status = "countdown";
 		room.loop = this.loop;
-		room.status = "playing";
 		room.objects.countdown = new Countdown(3,null,SETTINGS.HEIGHT*3/4,100);
     	room.objects.countdown.action = function(room){
       		delete room.objects.countdown;
@@ -51,16 +50,16 @@ var playing = {
 	loop: function(room){
 		var statuses = getStatsFromObejcts(room);
 		playing.io.to(room.id).emit('update', statuses);
-		if(room.status == "playing" /*(room.objects[room.players[0].id].score>=SETTINGS.GOAL ||room.objects[room.players[1].id].score>=SETTINGS.GOAL)*/){
+		if(room.status == "playing" && (room.objects[room.players[0].id].score>=SETTINGS.GOAL || room.objects[room.players[1].id].score>=SETTINGS.GOAL)){
 			room.status = "gameOver";
 			room.gameOverDelay = 3;
 		}
 		if(room.status == "gameOver" && room.gameOverDelay --< 0){
-			//if(room.objects[room.players[0].id].score>room.objects[room.players[1].id].score){
-        	room.RmMg.gameOver(room.id,room.players[0].id);
-      		//} else {
-        		//room.RmMg.gameOver(room.id,room.players[1].id);
-			//}
+			if(room.objects[room.players[0].id].score>room.objects[room.players[1].id].score){
+        		room.RmMg.gameOver(room.id,room.players[0].id);
+      		} else {
+        		room.RmMg.gameOver(room.id,room.players[1].id);
+			}
 		}
 	}
 };

@@ -3,10 +3,7 @@ $(function(){
   var INTERVAL = 10;
 
   var socket = io();
-  var canvas = document.createElement('canvas');
-  $(canvas).css("display", "block");
-  $(canvas).css("border", "black 1px solid");
-  $(canvas).css("margin", "0 auto");
+  var canvas = document.getElementById('canvas');
   var ctx = canvas.getContext("2d");
   var serverObjects=[];
   var mainLoop = function(){};
