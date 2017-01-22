@@ -1,11 +1,15 @@
-const Countdown = require("./Countdown.js");
+const Countdown = require("./countdown.js");
 const SETTINGS = require('./SETTINGS.js');
 var ready = {
 	initialize: function(io,room){
 		this.io = io;
 		room.status = "ready";
+		//Set the loop in the room equal to the loop in ready variable
 		room.loop = this.loop;
+		/*Destroy can be called because RmMg is inside the room contructor.
+		Calling the destroy function in RmMg not in this 'ready' variable*/
 		room.RmMg.destroy(room.id);
+		//Add countdown to the room.object array and instantiate a new one
 		room.objects.countdown = new Countdown(10,null,SETTINGS.HEIGHT-40);
     	room.objects.countdown.action = function(room){
      		delete room.objects.countdown;

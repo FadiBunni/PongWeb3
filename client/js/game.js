@@ -21,9 +21,13 @@ $(function(){
     document.body.appendChild(canvas);
     start.initialize();
   });
+
+  //Prints out the new user entered
   socket.on('new user entered', function(){
-    (new Audio('/wav/notification001.wav')).play();
+    console.log("new user entered");
   })
+
+  //Total user count update
   socket.on('total user count updated', function(count){
     window.document.title = GAME_SETTINGS.TITLE+" ("+count+")";
   });

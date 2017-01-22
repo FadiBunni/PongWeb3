@@ -1,11 +1,11 @@
 var SETTINGS = require("../utils/SETTINGS.js");
-//var BaseObejct = require("./BaseObject.js");
+var Baseobject = require("../utils/baseobject.js");
 
 var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
 var UNIT = 2;
 
 function Player(id, position){
-  //BaseObejct.call(this);
+  Baseobject.call(this);
   var color = "#";
   for(var i = 0; i < 6; i++ ){
     color += (Math.floor(Math.random()*16)).toString(16);
@@ -20,7 +20,7 @@ function Player(id, position){
       break;
   }
   this.role = "player";
-  //this.status.shape = "rectangle";
+  this.status.shape = "rectangle";
   this.id = id;
   this.score = 0;
   this.ready = false;
@@ -34,7 +34,7 @@ function Player(id, position){
     color : {fill:color}
   };
 }
-//Player.prototype = new BaseObejct();
+Player.prototype = new Baseobject();
 Player.prototype.constructor = Player;
 Player.prototype.update = function(room){
   var player = this.status;

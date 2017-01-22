@@ -1,12 +1,12 @@
 var SETTINGS = require("./SETTINGS.js");
-//var BaseObejct = require("./BaseObject.js");
+var Baseobject = require("./baseobject.js");
 
 function Countdown(count,xPos,yPos,size){
-  //rsBaseObejct.call(this);
+  Baseobject.call(this);
   this.defaultCount = count?count:10;
   this.defaultSize = size?size:40;
   this.createdAt = Date.now();
-  //this.status = "text";
+  this.status = "text";
   this.status = {
     color : {fill:"#123456",stroke:"#ffffff"},
     font : "Arial",
@@ -19,7 +19,7 @@ function Countdown(count,xPos,yPos,size){
     y : yPos?yPos:SETTINGS.HEIGHT/2
   };
 }
-//Countdown.prototype = new BaseObejct();
+Countdown.prototype = new Baseobject();
 Countdown.prototype.constructor = Countdown;
 Countdown.prototype.update = function(room){
   var count = this.defaultCount-Math.floor((Date.now()-this.createdAt)/1000);

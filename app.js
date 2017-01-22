@@ -23,9 +23,12 @@ const gameManager  = new (require('./server/js/gamestate/gamemanager.js'))(io, r
 io.on('connection', function(socket){
     console.log('user connected: ', socket.id);
     io.to(socket.id).emit('connected', SETTINGS.CLIENT_SETTINGS);
+    //Send data to all the sockets beside the emitting socket it self
     socket.broadcast.emit('new user entered');
+    //Update total user
     io.emit('total user count updated', socket.server.eio.clientsCount);
 
+    //push socket to lobby and delete them form lobby when they are ready
     socket.on('waiting', function(){
         console.log('waiting from ' + socket.id);
         lobbyManager.push(socket);
