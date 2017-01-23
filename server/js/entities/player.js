@@ -33,28 +33,24 @@ function Player(id, position){
     y : SETTINGS.HEIGHT/2,
     color : {fill:color}
   };
-}
-Player.prototype = new Baseobject();
-Player.prototype.constructor = Player;
-Player.prototype.update = function(room){
-  var player = this.status.rect;
-  if(room.status == "countdown" || room.status == "playing"){
-    if(this.keypress[UP]){
-      moveUp(player);
-    }
-    if(this.keypress[DOWN]){
-      moveDown(player);
+
+  //Create a new baseobject()
+  this.prototype = new Baseobject();
+  //
+  this.prototype.constructor = Player;
+
+  Player.prototype.update = function(room){
+    var player = this.status.rect;
+    if(room.status == "countdown" || room.status == "playing"){
+      if(this.keypress[UP]){
+          if(player.y - player.height/2 - UNIT >= 0 + SETTINGS.BORDER_WIDTH)
+          player.y -= UNIT;
+      }
+      if(this.keypress[DOWN]){
+          if(player.y + player.height/2 + UNIT <= SETTINGS.HEIGHT - SETTINGS.BORDER_WIDTH)
+          player.y += UNIT;
+      }
     }
   }
 };
-
 module.exports = Player;
-
-function moveUp(player){
-  if(player.y - player.height/2 - UNIT >= 0 + SETTINGS.BORDER_WIDTH)
-   player.y -= UNIT;
-}
-function moveDown(player){
-  if(player.y + player.height/2 + UNIT <= SETTINGS.HEIGHT - SETTINGS.BORDER_WIDTH)
-    player.y += UNIT;
-}

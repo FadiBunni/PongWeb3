@@ -35,17 +35,17 @@ io.on('connection', function(socket){
         lobbyManager.dispatch(roomManager);
     });
 
-    socket.on('ready', function(){
-        var roomIndex = roomManager.roomIndex[socket.id];
-        if(roomIndex) roomManager.rooms[roomIndex].objects[socket.id].ready = true;
-    });
-
     socket.on('disconnect', function(){
         var roomIndex = roomManager.roomIndex[socket.id];
         if(roomIndex) roomManager.destroy(roomIndex);
         lobbyManager.kick(socket);
         console.log('user disconnected: ', socket.id);
         io.emit('total user count updated', socket.server.eio.clientsCount);
+    });
+
+    socket.on('ready', function(){
+        var roomIndex = roomManager.roomIndex[socket.id];
+        if(roomIndex) roomManager.rooms[roomIndex].objects[socket.id].ready = true;
     });
 
     socket.on('keydown', function(keyCode){

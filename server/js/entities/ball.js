@@ -9,11 +9,12 @@ var TO = { RIGHT: "RIGHT", LEFT: "LEFT", UP: "UP", DOWN: "DOWN" };
 function Ball(player0Id, player1Id){
   Baseobject.call(this);
   this.playerIds = [player0Id,player1Id];
-  this.dynamic ={};
   this.speed = 4;
-  this.boostCount = 0;
-  this.boostCountMax = 100;
+  this.dynamic ={};
   this.dynamic = undefined;
+
+  // this.boostCount = 0;
+  // this.boostCountMax = 100;
   this.serve = new Serve(player0Id,-1);
   this.status.shape = "rectangle";
   this.status.rect = {
@@ -23,147 +24,125 @@ function Ball(player0Id, player1Id){
     height : SETTINGS.BALL.HEIGHT,
     color : {fill:"#000000"}
   };
-}
-Ball.prototype = new Baseobject();
-Ball.prototype.constructor = Ball;
-Ball.prototype.update = function(room){
-  var ball = this.status.rect;
-  var object;
-  var playerStat;
-  if(this.serve&&this.serve.isOn){
-    for(object in room.objects){
-      if(object == this.serve.player){
-        playerStat = room.objects[object].status.rect;
-        ball.y = playerStat.y;
-        if(playerStat.x<SETTINGS.WIDTH/2){
-          ball.x = playerStat.x+ball.width/2+playerStat.width/2;
-        } else {
-          ball.x = playerStat.x-ball.width/2-playerStat.width/2;
-        }
-        if(room.status=="playing" && --this.serve.count<0){
-          this.serve.isOn=false;
-          var newAngle;
-          if(playerStat.x<SETTINGS.WIDTH/2 && playerStat.y<SETTINGS.HEIGHT/2){
-            newAngle = -SETTINGS.SERVE_ANGLE;
-          } else if(playerStat.x<SETTINGS.WIDTH/2 && playerStat.y>SETTINGS.HEIGHT/2){
-            newAngle = +SETTINGS.SERVE_ANGLE;
-          } else if(playerStat.x<SETTINGS.WIDTH/2 && playerStat.y==SETTINGS.HEIGHT/2){
-            newAngle = getRandomSign()*SETTINGS.SERVE_ANGLE;
-          } else if(playerStat.x>SETTINGS.WIDTH/2 && playerStat.y<SETTINGS.HEIGHT/2){
-            newAngle = 180+SETTINGS.SERVE_ANGLE;
-          } else if(playerStat.x>SETTINGS.WIDTH/2 && playerStat.y>SETTINGS.HEIGHT/2){
-            newAngle = 180-SETTINGS.SERVE_ANGLE;
-          } else if(playerStat.x>SETTINGS.WIDTH/2 && playerStat.y==SETTINGS.HEIGHT/2){
-            newAngle = 180+getRandomSign()*SETTINGS.SERVE_ANGLE;
+  this.prototype = new Baseobject();
+  this.prototype.constructor = Ball;
+
+  Ball.prototype.update = function(room){
+    var ball = this.status.rect;
+    var object;
+    var playerStat;
+    if(this.serve&&this.serve.isOn){
+      for(object in room.objects){
+        if(object == this.serve.player){
+          playerStat = room.objects[object].status.rect;
+          ball.y = playerStat.y;
+          if(playerStat.x<SETTINGS.WIDTH/2){
+            ball.x = playerStat.x+ball.width/2+playerStat.width/2;
+          } else {
+            ball.x = playerStat.x-ball.width/2-playerStat.width/2;
           }
-          this.dynamic = angleToVelocity(newAngle);
+          if(room.status=="playing" && --this.serve.count<0){
+            this.serve.isOn=false;
+            // var newAngle;
+            // if(playerStat.x<SETTINGS.WIDTH/2 && playerStat.y<SETTINGS.HEIGHT/2){
+            //   newAngle = -SETTINGS.SERVE_ANGLE;
+            // } else if(playerStat.x<SETTINGS.WIDTH/2 && playerStat.y>SETTINGS.HEIGHT/2){
+            //   newAngle = +SETTINGS.SERVE_ANGLE;
+            // } else if(playerStat.x<SETTINGS.WIDTH/2 && playerStat.y==SETTINGS.HEIGHT/2){
+            //   newAngle = getRandomSign()*SETTINGS.SERVE_ANGLE;
+            // } else if(playerStat.x>SETTINGS.WIDTH/2 && playerStat.y<SETTINGS.HEIGHT/2){
+            //   newAngle = 180+SETTINGS.SERVE_ANGLE;
+            // } else if(playerStat.x>SETTINGS.WIDTH/2 && playerStat.y>SETTINGS.HEIGHT/2){
+            //   newAngle = 180-SETTINGS.SERVE_ANGLE;
+            // } else if(playerStat.x>SETTINGS.WIDTH/2 && playerStat.y==SETTINGS.HEIGHT/2){
+            //   newAngle = 180+getRandomSign()*SETTINGS.SERVE_ANGLE;
+            // }
+            // this.dynamic = angleToVelocity(newAngle);
+          }
         }
       }
-    }
-  } else if(room.status=="playing"){
-    if(this.boostCount >0){
-      this.boostCount--;
-      var boost;
-      if(this.boostCount>(this.boostCountMax/2)){
-        this.status.rect.color.fill = "#FF0000";
-        boost = 2*this.speed;
-      }else{
-        this.status.rect.color.fill = "#000000";
-        boost = 2*this.speed*(this.boostCount*2/this.boostCountMax);
+    } else if(room.status=="playing"){
+        ball.x += this.dynamic.xVel*this.speed;
+        ball.y += this.dynamic.yVel*this.speed;
+      /* dedug mode
+      if(ball.x <= 50 || ball.x >= SETTINGS.WIDTH - 50 ){
+      this.speed = 0.2;
+        } else {
+        this.speed = 2;
       }
-      ball.x += this.dynamic.xVel*(this.speed+boost);
-      ball.y += this.dynamic.yVel*(this.speed+boost);
-    }else{
-      ball.x += this.dynamic.xVel*this.speed;
-      ball.y += this.dynamic.yVel*this.speed;
-    }
-    /* dedug mode
-    if(ball.x <= 50 || ball.x >= SETTINGS.WIDTH - 50 ){
-    this.speed = 0.2;
-      } else {
-      this.speed = 2;
-    }
-    /**/
+      /**/
 
-    if(ball.x <= 0 - ball.width*2){
-      room.objects[this.playerIds[1]].score++;
-      this.serve= new Serve(this.playerIds[0]);
-      ball.color.fill = "#000000";
-      this.boostCount = 0;
-    }
-    if(ball.x >= SETTINGS.WIDTH + ball.width*2){
-      room.objects[this.playerIds[0]].score++;
-      this.serve= new Serve(this.playerIds[1]);
-      ball.color.fill = "#000000";
-      this.boostCount = 0;
-    }
-    if(ball.y - ball.height/2 <= 0 + SETTINGS.BORDER_WIDTH){
-      this.dynamic = bounce(0,this.dynamic.angle);
-      room.sounds.push("pong001");
-    }
-
-    if(ball.y + ball.height/2 >= SETTINGS.HEIGHT - SETTINGS.BORDER_WIDTH){
-      this.dynamic = bounce(0,this.dynamic.angle);
-      room.sounds.push("pong001");
-    }
-
-    for(object in room.objects){
-      if(room.objects[object].role == "player"){
-        playerStat = room.objects[object].status.rect;
-        var collusionType = ballCollusionCheck(ball, playerStat, this.dynamic.angle);
-        if(collusionType != COLLUSION_TYPE.NO_COLLUSION){
-          room.sounds.push("pong001");
-        }
-
-        switch(collusionType){
-          case COLLUSION_TYPE.NO_COLLUSION:
-            break;
-          case COLLUSION_TYPE.UP:
-            if(getUpDown(this.dynamic.angle)==TO.DOWN) this.dynamic = bounce(0,this.dynamic.angle);
-            else this.dynamic = angleToVelocity(this.dynamic.angle-5);
-            //console.log("UP");
-            break;
-          case COLLUSION_TYPE.DOWN:
-            if(getUpDown(this.dynamic.angle)==TO.UP) this.dynamic = bounce(0,this.dynamic.angle);
-            else this.dynamic = angleToVelocity(this.dynamic.angle+5);
-            //console.log("DOWN");
-            break;
-          case COLLUSION_TYPE.LEFT:
-            if(getLeftRight(this.dynamic.angle)==TO.RIGHT) this.dynamic = bounce(90,this.dynamic.angle);
-            //console.log("LEFT");
-            break;
-          case COLLUSION_TYPE.RIGHT:
-            if(getLeftRight(this.dynamic.angle)==TO.LEFT) this.dynamic = bounce(90,this.dynamic.angle);
-            //console.log("RIGHT");
-            break;
-          case COLLUSION_TYPE.SMASH_TYPE_1:
-            this.dynamic = smash(this.dynamic.angle);
-            this.boostCount = this.boostCountMax;
-            room.effects = room.effects.concat(GenerateSparks(ball.x,ball.y));
-            //console.log("SMASH_TYPE_1");
-            break;
-          case COLLUSION_TYPE.SMASH_TYPE_2:
-            this.dynamic = slide(this.dynamic.angle);
-            this.boostCount = this.boostCountMax;
-            room.effects = room.effects.concat(GenerateSparks(ball.x,ball.y));
-            //console.log("SMASH_TYPE_2");
-            break;
-          case COLLUSION_TYPE.STRAIGHT:
-            this.dynamic = stratght(this.dynamic.angle);
-            //console.log("STRAIGHT");
-            break;
-        }
+      if(ball.x <= 0 - ball.width*2){
+        room.objects[this.playerIds[1]].score++;
+        this.serve= new Serve(this.playerIds[0]);
+        ball.color.fill = "#000000";
       }
+
+      if(ball.x >= SETTINGS.WIDTH + ball.width*2){
+        room.objects[this.playerIds[0]].score++;
+        this.serve= new Serve(this.playerIds[1]);
+        ball.color.fill = "#000000";
+      }
+
+      // if(ball.y - ball.height/2 <= 0 + SETTINGS.BORDER_WIDTH){
+      //   this.dynamic.xVel *= -1;
+      //   //room.sounds.push("pong001");
+      // } else if(ball.y + ball.height/2 >= SETTINGS.HEIGHT - SETTINGS.BORDER_WIDTH){
+      //   this.dynamic.xVel *= -1;
+      //   //room.sounds.push("pong001");
+      // }
+
+      // for(object in room.objects){
+      //   if(room.objects[object].role == "player"){
+      //     playerStat = room.objects[object].status.rect;
+      //     var collusionType = ballCollusionCheck(ball, playerStat, this.dynamic.angle);
+      //     if(collusionType != COLLUSION_TYPE.NO_COLLUSION){
+      //       room.sounds.push("pong001");
+      //     }
+
+      //     switch(collusionType){
+      //       case COLLUSION_TYPE.NO_COLLUSION:
+      //         break;
+      //       case COLLUSION_TYPE.UP:
+      //         if(getUpDown(this.dynamic.angle)==TO.DOWN) this.dynamic = bounce(0,this.dynamic.angle);
+      //         else this.dynamic = angleToVelocity(this.dynamic.angle-5);
+      //         //console.log("UP");
+      //         break;
+      //       case COLLUSION_TYPE.DOWN:
+      //         if(getUpDown(this.dynamic.angle)==TO.UP) this.dynamic = bounce(0,this.dynamic.angle);
+      //         else this.dynamic = angleToVelocity(this.dynamic.angle+5);
+      //         //console.log("DOWN");
+      //         break;
+      //       case COLLUSION_TYPE.LEFT:
+      //         if(getLeftRight(this.dynamic.angle)==TO.RIGHT) this.dynamic = bounce(90,this.dynamic.angle);
+      //         //console.log("LEFT");
+      //         break;
+      //       case COLLUSION_TYPE.RIGHT:
+      //         if(getLeftRight(this.dynamic.angle)==TO.LEFT) this.dynamic = bounce(90,this.dynamic.angle);
+      //         //console.log("RIGHT");
+      //         break;
+      //       case COLLUSION_TYPE.SMASH_TYPE_1:
+      //         this.dynamic = smash(this.dynamic.angle);
+      //         this.boostCount = this.boostCountMax;
+      //         room.effects = room.effects.concat(GenerateSparks(ball.x,ball.y));
+      //         //console.log("SMASH_TYPE_1");
+      //         break;
+      //       case COLLUSION_TYPE.SMASH_TYPE_2:
+      //         this.dynamic = slide(this.dynamic.angle);
+      //         this.boostCount = this.boostCountMax;
+      //         room.effects = room.effects.concat(GenerateSparks(ball.x,ball.y));
+      //         //console.log("SMASH_TYPE_2");
+      //         break;
+      //       case COLLUSION_TYPE.STRAIGHT:
+      //         this.dynamic = stratght(this.dynamic.angle);
+      //         //console.log("STRAIGHT");
+      //         break;
+      //     }
+      //   }
+      // }
     }
-  }
-};
-
-Ball.prototype.initialize = function(objects){
-  var ball = this.status.rect;
-  ball.x = SETTINGS.WIDTH/2;
-  ball.y = SETTINGS.HEIGHT/2;
-};
-
+  };
+}
 module.exports = Ball;
 
 function GenerateSparks(x,y){
@@ -173,6 +152,7 @@ function GenerateSparks(x,y){
   }
   return sparkArray;
 }
+
 function stratght(angle){
   var newAngle = getBouncedAngle(90,angle);
   if(angle == 180 || angle === 0){
@@ -192,6 +172,7 @@ function stratght(angle){
   }
   return angleToVelocity(newAngle);
 }
+
 function Serve(playerId,count){
   return {
     isOn:true,
