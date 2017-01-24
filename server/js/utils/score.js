@@ -24,11 +24,10 @@ function Score(id,position){
     x : xPos,
     y : SETTINGS.SCORE.Y
   };
-  this.prototype = new Baseobject();
-  this.prototype.constructor = Score;
-  Score.prototype.update = function(room){
+  this.update = function(room){
     this.status.text.message = room.objects[this.playerId].score;
     return this;
   };
+
 }
 module.exports = Score;

@@ -11,7 +11,7 @@ function GameManager(io, roomManager){
     	//Get the spcific room
       	var room = GmMg.RmMg.rooms[roomId];
       	//Get the runLoop method in the room class, and set room as parameter
-      	room.runLoop(room);
+        room.runLoop(room);
     }
   },INTERVAL);
 }

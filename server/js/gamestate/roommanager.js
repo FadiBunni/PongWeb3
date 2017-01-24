@@ -35,9 +35,9 @@ function RoomManager(io){
 
 	//Delete the players form array and destory the room
 	RmMg.destroy = function(roomId){
-		//Find the room with the soecific roomId and set it to room variable
+		//Find the room with the specific roomId and set it to room variable
 		var room = RmMg.rooms[roomId];
-		/*Loop through all players if they are not ready and if the timer has finished
+		/*Loop through all players if they are not ready and if the timer has not finished
 		delete player by their socket.id in the roomIndex and and emit to socketid a message */
 		room.players.forEach(function(socket){
 			var message = (!room.objects[socket.id].ready && !room.objects.countdown) ? "You are not prepared": null;
@@ -60,5 +60,4 @@ function RoomManager(io){
 
 	};
 }
-
 module.exports = RoomManager;

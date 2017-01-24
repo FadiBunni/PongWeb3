@@ -19,9 +19,7 @@ function Countdown(count,xPos,yPos,size){
     y : yPos?yPos:SETTINGS.HEIGHT/2
   };
 
-  this.prototype = new Baseobject();
-  this.prototype.constructor = Countdown;
-  Countdown.prototype.update = function(room){
+  this.update = function(room){
     var count = this.defaultCount-Math.floor((Date.now()-this.createdAt)/1000);
     if(this.status.text.message != count && count >= 0){
       this.status.text.size = this.defaultSize;
@@ -34,7 +32,8 @@ function Countdown(count,xPos,yPos,size){
     }
     return this;
   };
-  Countdown.prototype.action = function(room){
+
+  this.action = function(room){
     return this;
   };
 }

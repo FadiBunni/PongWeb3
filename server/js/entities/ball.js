@@ -1,12 +1,13 @@
 const SETTINGS = require("../utils/SETTINGS.js");
 const Baseobject = require("../utils/baseobject.js");
-const Spark = require("../utils/spark.js");
+const Spark = require("./spark.js");
 
 var COLLUSION_TYPE = { NO_COLLUSION: -1, UP: 1, RIGHT: 2, DOWN: 3, LEFT: 4, SMASH_TYPE_1: 5 ,SMASH_TYPE_2: 6, STRAIGHT: 7};
 var QUADRANT = { FIRST: 1, SECOND: 2, THIRD: 3, FOURTH: 4 };
 var TO = { RIGHT: "RIGHT", LEFT: "LEFT", UP: "UP", DOWN: "DOWN" };
 
 function Ball(player0Id, player1Id){
+  //ball gets all the methods in Baseobject.
   Baseobject.call(this);
   this.playerIds = [player0Id,player1Id];
   this.speed = 4;
@@ -24,9 +25,7 @@ function Ball(player0Id, player1Id){
     height : SETTINGS.BALL.HEIGHT,
     color : {fill:"#000000"}
   };
-  this.prototype = new Baseobject();
-  this.prototype.constructor = Ball;
-  Ball.prototype.update = function(room){
+  this.update = function(room){
     var ball = this.status.rect;
     var object;
     var playerStat;

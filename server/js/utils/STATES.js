@@ -1,4 +1,4 @@
-const Countdown = require("./countdown.js");
+const Countdown = require('./countdown.js');
 const SETTINGS = require('./SETTINGS.js');
 
 var ready = {
@@ -27,6 +27,9 @@ var ready = {
 		//get statuses from all the objects in the room array, and send it to client
 		var statuses = getStatsFromObejcts(room);
 		ready.io.to(room.id).emit('update', statuses);
+		/*You can return the data, so it can be consoled.log in room class
+		within the room.runLoop method.*/
+		//return statuses;
 	}
 };
 
@@ -59,6 +62,9 @@ var playing = {
         		room.RmMg.gameOver(room.id,room.players[1].id);
 			}
 		}
+		/*You can return the data, so it can be consoled.log in room class
+		within the room.runLoop method.*/
+		//return statuses;
 	}
 };
 module.exports = {ready,playing};
@@ -68,8 +74,10 @@ function getStatsFromObejcts(room){
 	//Object is all the objects in the object array in room "class".
 	for(var object in room.objects){
 		//console.log("object: " + object);
+		//Get the specifik class/entity.
 		var obj = room.objects[object];
 		//console.log("obj: " + obj);
+		//Update all the classes with an update method and push all statuses in every object.
 		obj.update(room);
 		statuses.push(obj.status);
 		//console.log("obj.status: " + obj.status);

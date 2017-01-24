@@ -1,5 +1,5 @@
-const SETTINGS = require("./SETTINGS.js");
-const Baseobject = require("./Baseobject.js");
+const SETTINGS = require("../utils/SETTINGS.js");
+const Baseobject = require("../utils/Baseobject.js");
 
 function Spark(x,y){
   Baseobject.call(this);

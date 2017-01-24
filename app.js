@@ -28,13 +28,16 @@ io.on('connection', function(socket){
     //Update total user
     io.emit('total user count updated', socket.server.eio.clientsCount);
 
-    //push socket to lobby and delete them form lobby when they are ready
+    //Push socket to lobby and delete them form lobby when they are ready
     socket.on('waiting', function(){
         console.log('waiting from ' + socket.id);
         lobbyManager.push(socket);
         lobbyManager.dispatch(roomManager);
     });
 
+    /*Destroy the room (if it exits), delete the connected players from lobby array,
+    see lobbymanager. Emit the message to client.
+    */
     socket.on('disconnect', function(){
         var roomIndex = roomManager.roomIndex[socket.id];
         if(roomIndex) roomManager.destroy(roomIndex);
@@ -43,16 +46,19 @@ io.on('connection', function(socket){
         io.emit('total user count updated', socket.server.eio.clientsCount);
     });
 
+    //When the player is ready get roomIndex(if it exits), and find the player set the ready status to be true
     socket.on('ready', function(){
         var roomIndex = roomManager.roomIndex[socket.id];
         if(roomIndex) roomManager.rooms[roomIndex].objects[socket.id].ready = true;
     });
 
+    //When the player is ready get roomIndex(if it exits), and find the player set the keypress to be true
     socket.on('keydown', function(keyCode){
         var roomIndex = roomManager.roomIndex[socket.id];
         if(roomIndex) roomManager.rooms[roomIndex].objects[socket.id].keypress[keyCode] = true;
     });
 
+    //When the player is ready get roomIndex(if it exits), and find the player set the keypress to be false
     socket.on('keyup', function(keyCode){
         var roomIndex = roomManager.roomIndex[socket.id];
         if(roomIndex) delete roomManager.rooms[roomIndex].objects[socket.id].keypress[keyCode];

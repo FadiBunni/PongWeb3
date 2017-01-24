@@ -1,6 +1,6 @@
-var Score = require('../utils/score.js');
-var Player = require('../entities/player.js');
-var Ball = require('../entities/ball.js');
+const Score = require('../utils/score.js');
+const Player = require('../entities/player.js');
+const Ball = require('../entities/ball.js');
 
 function Room (RmMg, io, id, player0, player1){
 	var room = this;
@@ -26,9 +26,12 @@ function Room (RmMg, io, id, player0, player1){
 
 	//The room.loop is set in STATES.js!!!!!!!!
 	room.runLoop = function(room) {
+		//Too console.log the objects info, you need to return the data in STATES.js, see loop.
+		// console.log("All objects: ");
+		// console.log(room.loop(room));
 		room.loop(room);
 		//room.playSounds();
 	};
 }
-
 module.exports = Room;
+

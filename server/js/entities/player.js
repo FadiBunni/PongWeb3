@@ -5,6 +5,7 @@ var LEFT = 37, UP = 38, RIGHT = 39, DOWN = 40;
 var UNIT = 2;
 
 function Player(id, position){
+  //ball gets all the methods in Baseobject.
   Baseobject.call(this);
   var color = "#";
   for(var i = 0; i < 6; i++ ){
@@ -34,12 +35,16 @@ function Player(id, position){
     color : {fill:color}
   };
 
-  //Create a new baseobject()
-  this.prototype = new Baseobject();
-  //
-  this.prototype.constructor = Player;
+  /*this.update can also be created by using prototype it is better for the compailer,
+  since you only need to create one instace of this.update for every player you have.
+  The code would look something like this:
+  "Player.prototype = Object.create(new Baseobejct());
+  Player.prototype.update = function(room){something}"
+  This has to be writtin outside the Player class(down beneath).
+  Also, Baseobject needs to have the update prototype(it is commented out for now, check the class).
+  */
 
-  Player.prototype.update = function(room){
+  this.update = function(room){
     var player = this.status.rect;
     if(room.status == "countdown" || room.status == "playing"){
       if(this.keypress[UP]){
@@ -53,6 +58,5 @@ function Player(id, position){
     }
     return this;
   }
-  console.log(this.status);
 };
 module.exports = Player;
