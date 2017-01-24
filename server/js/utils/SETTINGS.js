@@ -6,12 +6,12 @@ const SETTINGS = {
   BACKGROUND_COLOR : "#FFFFFF",
   PLAYER : {
     WIDTH : 20,
-    HEIGHT : 80,
+    HEIGHT : 130,
     GAP : 30
   },
   BALL : {
-    WIDTH : 15,
-    HEIGHT : 15
+    WIDTH : 20,
+    HEIGHT : 20
   },
   NET : {
     WIDTH : 6
@@ -28,6 +28,7 @@ const SETTINGS = {
   SERVE_ANGLE : 30,
   GOAL : 5
 };
+
 SETTINGS.CLIENT_SETTINGS = {
   VER : SETTINGS.VER,
   WIDTH : SETTINGS.WIDTH,
