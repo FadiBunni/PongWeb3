@@ -51,6 +51,8 @@ function Player(id, position){
           player.y += UNIT;
       }
     }
+    return this;
   }
+  console.log(this.status);
 };
 module.exports = Player;

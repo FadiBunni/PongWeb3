@@ -1,5 +1,5 @@
-function BaseObject() {
+function Baseobject() {
   this.status = {};
 }
-BaseObject.prototype.update = function(){};
-module.exports = BaseObject;
+Baseobject.prototype.update = function(){};
+module.exports = Baseobject;

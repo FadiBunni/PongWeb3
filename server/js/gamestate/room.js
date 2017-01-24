@@ -18,14 +18,13 @@ function Room (RmMg, io, id, player0, player1){
 	room.effects = [];
 	room.sounds = [];
 
-	room.loop = function(){};
-
 	room.playsounds = function(){
 		if(room.sounds.length > 0){
 			io.to(room.id).emit('playSound', room.sounds.pop());
 		}
 	};
 
+	//The room.loop is set in STATES.js!!!!!!!!
 	room.runLoop = function(room) {
 		room.loop(room);
 		//room.playSounds();

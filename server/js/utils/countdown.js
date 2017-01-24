@@ -18,20 +18,24 @@ function Countdown(count,xPos,yPos,size){
     x : xPos?xPos:SETTINGS.WIDTH/2,
     y : yPos?yPos:SETTINGS.HEIGHT/2
   };
+
+  this.prototype = new Baseobject();
+  this.prototype.constructor = Countdown;
+  Countdown.prototype.update = function(room){
+    var count = this.defaultCount-Math.floor((Date.now()-this.createdAt)/1000);
+    if(this.status.text.message != count && count >= 0){
+      this.status.text.size = this.defaultSize;
+      this.status.text.message = count;
+    } else {
+      this.status.text.size *= 0.997;
+    }
+    if(count<0){
+      this.action(room);
+    }
+    return this;
+  };
+  Countdown.prototype.action = function(room){
+    return this;
+  };
 }
-Countdown.prototype = new Baseobject();
-Countdown.prototype.constructor = Countdown;
-Countdown.prototype.update = function(room){
-  var count = this.defaultCount-Math.floor((Date.now()-this.createdAt)/1000);
-  if(this.status.text.message != count && count >= 0){
-    this.status.text.size = this.defaultSize;
-    this.status.text.message = count;
-  } else {
-    this.status.text.size *= 0.997;
-  }
-  if(count<0){
-    this.action(room);
-  }
-};
-Countdown.prototype.action = function(room){};
 module.exports = Countdown;

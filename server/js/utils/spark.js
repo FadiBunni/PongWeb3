@@ -1,5 +1,5 @@
-var SETTINGS = require("./SETTINGS.js");
-var Baseobject = require("./Baseobject.js");
+const SETTINGS = require("./SETTINGS.js");
+const Baseobject = require("./Baseobject.js");
 
 function Spark(x,y){
   Baseobject.call(this);
@@ -18,20 +18,20 @@ function Spark(x,y){
     color : {fill:"#000000"},
     globalAlpha : 1
   };
+  this.prototype = new Baseobject();
+  this.prototype.constructor = Spark;
+  Spark.prototype.update = function(room){
+    if(this.count>0){
+      this.count--;
+      var power = Math.pow(this.count,3)/Math.pow(this.countMax,3);
+      this.status.rect.globalAlpha = (this.count%10>this.blinkingTerm&&this.count%10<this.blinkingTerm+5)?this.count/this.countMax:0;
+      this.status.rect.x += power*this.xPower;
+      this.status.rect.y += power*this.yPower;
+    } else {
+        var index = room.effects.indexOf(this);
+        if(index >= 0) room.effects.splice(index,1);
+    }
+    return this;
+  };
 }
-Spark.prototype = new Baseobject();
-Spark.prototype.constructor = Spark;
-Spark.prototype.update = function(room){
-  if(this.count>0){
-    this.count--;
-    var power = Math.pow(this.count,3)/Math.pow(this.countMax,3);
-    this.status.rect.globalAlpha = (this.count%10>this.blinkingTerm&&this.count%10<this.blinkingTerm+5)?this.count/this.countMax:0;
-    this.status.rect.x += power*this.xPower;
-    this.status.rect.y += power*this.yPower;
-  } else {
-      var index = room.effects.indexOf(this);
-      if(index >= 0) room.effects.splice(index,1);
-  }
-};
-
 module.exports = Spark;

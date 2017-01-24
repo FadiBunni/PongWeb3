@@ -1,9 +1,9 @@
-var STATES = require('../utils/STATES.js');
+const STATES = require('../utils/STATES.js');
 const Room = require('./room.js');
-var Player = require('../entities/player.js');
-var Score = require('../utils/score.js');
-var Countdown = require("../utils/countdown.js");
-var SETTINGS = require('../utils/SETTINGS.js');
+const Player = require('../entities/player.js');
+const Score = require('../utils/score.js');
+const Countdown = require("../utils/countdown.js");
+const SETTINGS = require('../utils/SETTINGS.js');
 
 function RoomManager(io){
 	var RmMg = this;
