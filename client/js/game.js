@@ -1,11 +1,14 @@
 $(function(){
+  const cUtils = require('./utils/canvas.js');
   var GAME_SETTINGS = null;
   var INTERVAL = 10;
 
   var socket = io();
-  var canvas = document.getElementById('canvas');
+
   var ctx = canvas.getContext("2d");
+
   var serverObjects=[];
+
   var mainLoop = function(){};
   var interval = setInterval(function(){
     mainLoop();
@@ -13,9 +16,8 @@ $(function(){
 
   socket.on('connected', function(SERVER_GAME_SETTINGS){
     GAME_SETTINGS = SERVER_GAME_SETTINGS;
-    $(canvas).attr("width", GAME_SETTINGS.WIDTH);
-    $(canvas).attr("height", GAME_SETTINGS.HEIGHT);
-    document.body.appendChild(canvas);
+    const canvas = cUtils.generateCanvas(GAME_SETTINGS.WIDTH, GAME_SETTINGS.HEIGHT)
+
     start.initialize();
   });
 
@@ -768,14 +770,14 @@ Opening.prototype.initialize = function(canvas,ctx,GAME_SETTINGS){
       backgroundPatten.width = bgWidth;
       backgroundPatten.height = bgHeight;
 
-      // var texture = new Image();
-      // texture.src = "/img/background001.png";
+      var texture = new Image();
+      texture.src = "img/background001.png";
 
-      // var PattenCtx = backgroundPatten.getContext("2d");
-      // PattenCtx.drawImage(texture,xOffset-bgWidth,yOffset-bgHeight);
-      // PattenCtx.drawImage(texture,xOffset-bgWidth,yOffset);
-      // PattenCtx.drawImage(texture,xOffset,yOffset-bgHeight);
-      // PattenCtx.drawImage(texture,xOffset,yOffset);
+      var PattenCtx = backgroundPatten.getContext("2d");
+      PattenCtx.drawImage(texture,xOffset-bgWidth,yOffset-bgHeight);
+      PattenCtx.drawImage(texture,xOffset-bgWidth,yOffset);
+      PattenCtx.drawImage(texture,xOffset,yOffset-bgHeight);
+      PattenCtx.drawImage(texture,xOffset,yOffset);
 
       var pat = ctx.createPattern(backgroundPatten,"repeat");
 

@@ -34,11 +34,15 @@ function Ball(player0Id, player1Id){
         if(object == this.serve.player){
           playerStat = room.objects[object].status.rect;
           ball.y = playerStat.y;
+
+          //Set where the ball should be at which player
           if(playerStat.x<SETTINGS.WIDTH/2){
             ball.x = playerStat.x+ball.width/2+playerStat.width/2;
           } else {
             ball.x = playerStat.x-ball.width/2-playerStat.width/2;
           }
+
+          //Define the angle in which the ball should be served at, depending on wich side.
           if(room.status=="playing" && --this.serve.count<0){
             this.serve.isOn=false;
             var newAngle;
@@ -55,6 +59,7 @@ function Ball(player0Id, player1Id){
             } else if(playerStat.x>SETTINGS.WIDTH/2 && playerStat.y==SETTINGS.HEIGHT/2){
               newAngle = 180+getRandomSign()*SETTINGS.SERVE_ANGLE;
             }
+            console.log(newAngle);
             this.dynamic = angleToVelocity(newAngle);
           }
         }
@@ -109,7 +114,7 @@ function Ball(player0Id, player1Id){
       for(object in room.objects){
         if(room.objects[object].role == "player"){
           playerStat = room.objects[object].status.rect;
-          var collusionType = ballCollusionCheck(ball, playerStat, this.dynamic.angle);
+          var collusionType = ballCollisionCheck(ball, playerStat, this.dynamic.angle);
           if(collusionType != COLLUSION_TYPE.NO_COLLUSION){
             room.sounds.push("pong001");
           }
@@ -255,7 +260,7 @@ function Point(x,y){
   return {x:x,y:y};
 }
 
-function ballCollusionCheck(ballStat,playerStat,ballAngle){
+function ballCollisionCheck(ballStat,playerStat,ballAngle){
   ballAngle = trimAngle(ballAngle);
   var points=[
     new Point(ballStat.x - ballStat.width/2, ballStat.y - ballStat.height/2),

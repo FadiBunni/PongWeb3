@@ -1,12 +1,15 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 $(function(){
+  const cUtils = require('./utils/canvas.js');
   var GAME_SETTINGS = null;
   var INTERVAL = 10;
 
   var socket = io();
-  var canvas = document.getElementById('canvas');
+
   var ctx = canvas.getContext("2d");
+
   var serverObjects=[];
+
   var mainLoop = function(){};
   var interval = setInterval(function(){
     mainLoop();
@@ -14,9 +17,8 @@ $(function(){
 
   socket.on('connected', function(SERVER_GAME_SETTINGS){
     GAME_SETTINGS = SERVER_GAME_SETTINGS;
-    $(canvas).attr("width", GAME_SETTINGS.WIDTH);
-    $(canvas).attr("height", GAME_SETTINGS.HEIGHT);
-    document.body.appendChild(canvas);
+    const canvas = cUtils.generateCanvas(GAME_SETTINGS.WIDTH, GAME_SETTINGS.HEIGHT)
+
     start.initialize();
   });
 
@@ -769,14 +771,14 @@ Opening.prototype.initialize = function(canvas,ctx,GAME_SETTINGS){
       backgroundPatten.width = bgWidth;
       backgroundPatten.height = bgHeight;
 
-      // var texture = new Image();
-      // texture.src = "/img/background001.png";
+      var texture = new Image();
+      texture.src = "img/background001.png";
 
-      // var PattenCtx = backgroundPatten.getContext("2d");
-      // PattenCtx.drawImage(texture,xOffset-bgWidth,yOffset-bgHeight);
-      // PattenCtx.drawImage(texture,xOffset-bgWidth,yOffset);
-      // PattenCtx.drawImage(texture,xOffset,yOffset-bgHeight);
-      // PattenCtx.drawImage(texture,xOffset,yOffset);
+      var PattenCtx = backgroundPatten.getContext("2d");
+      PattenCtx.drawImage(texture,xOffset-bgWidth,yOffset-bgHeight);
+      PattenCtx.drawImage(texture,xOffset-bgWidth,yOffset);
+      PattenCtx.drawImage(texture,xOffset,yOffset-bgHeight);
+      PattenCtx.drawImage(texture,xOffset,yOffset);
 
       var pat = ctx.createPattern(backgroundPatten,"repeat");
 
@@ -851,4 +853,52 @@ function drawText(ctx, text){
 function clone (object){
   return JSON.parse(JSON.stringify(object))
 }
+},{"./utils/canvas.js":2}],2:[function(require,module,exports){
+var Canvas = {
+	getPixelRatio : function getPixelRatio(ctx) {
+	  console.log('Determining pixel ratio.');
+
+	  // I'd rather not have a giant var declaration block,
+	  // so I'm storing the props in an array to dynamically
+	  // get the backing ratio.
+	  var backingStores = [
+	    'webkitBackingStorePixelRatio',
+	    'mozBackingStorePixelRatio',
+	    'msBackingStorePixelRatio',
+	    'oBackingStorePixelRatio',
+	    'backingStorePixelRatio'
+	  ];
+
+	  var deviceRatio = window.devicePixelRatio;
+
+	  // Iterate through our backing store props and determine the proper backing ratio.
+	  var backingRatio = backingStores.reduce(function(prev, curr) {
+	    return (ctx.hasOwnProperty(curr) ? ctx[curr] : 1);
+	  });
+
+	  // Return the proper pixel ratio by dividing the device ratio by the backing ratio
+	  return deviceRatio / backingRatio;
+	},
+
+	generateCanvas : function generateCanvas(w, h) {
+	  console.log('Generating canvas.');
+
+	  var canvas = document.getElementById('canvas');
+	  var ctx = canvas.getContext('2d');
+	  // Pass our canvas' context to our getPixelRatio method
+	  var ratio = this.getPixelRatio(ctx);
+
+	  // Set the canvas' width then downscale via CSS
+	  canvas.width = Math.round(w * ratio);
+	  canvas.height = Math.round(h * ratio);
+	  canvas.style.width = w +'px';
+	  canvas.style.height = h +'px';
+	  // Scale the context so we get accurate pixel density
+	  ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+
+	  return canvas;
+	}
+};
+
+module.exports = Canvas;
 },{}]},{},[1]);
